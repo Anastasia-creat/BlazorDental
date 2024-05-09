@@ -1,0 +1,72 @@
+﻿@model KursovayaBlazorNet6.Models.EditDoctorsModel
+
+@{
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+    ViewData["Title"] = "Добавить нового врача";
+}
+
+
+
+<h4>@ViewData["Title"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditDoctorsView" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="btn btn-light"></div>
+          @*  <div class="form-group">
+                <label asp-for="UrlReturn" class="control-label"></label>
+                <input asp-for="UrlReturn" class="form-control" />
+                <span asp-validation-for="UrlReturn" class="text-danger"></span>
+            </div>*@
+           <div class="form-group">
+                <label asp-for="SelectedCategoryId" class="control-label"></label>
+                <input asp-for="SelectedCategoryId" class="form-control" />
+                <span asp-validation-for="SelectedCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <input asp-for="Category" class="form-control" />
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+          @*  <div class="form-group">
+                <label asp-for="DoctorId" class="control-label"></label>
+                <input asp-for="DoctorId" class="form-control" />
+                <span asp-validation-for="DoctorId" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+              <div class="form-group">
+                <label>Загрузка картинки</label>
+                <input asp-for="ImageFile" type="file" accept="image/*"/>
+            </div>
+
+            <input type="hidden" name="urlReturn" value="@Model.UrlReturn" />
+
+         @*   <div class="form-group">
+                <label asp-for="ImageUrl" class="control-label"></label>
+                <input asp-for="ImageUrl" class="form-control" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-light" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Вернуться назад</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,89 @@
+﻿@using KursovayaBlazorNet6.Helpers;
+@model KursovayaBlazorNet6.Models.DoctorPageModel
+
+@*<a class="btn btn-lg btn-light"
+asp-controller="Service"
+asp-action="ListView">Список услуг</a>*@
+
+@{
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+    string pathAndQuery =
+            Context.Request.Path +
+            Context.Request.QueryString;
+
+    ViewData["Title"] = Model.CategoryName == null
+    ? "Врачи"
+    : $"Врачи({Model.CategoryName})";
+}
+
+<h1> @ViewData["Title"]</h1>
+
+@Html.PaginationBootstrapDoc(Model)
+
+
+
+
+<table class="table" @*class="table table-hover table-bordered" *@>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DoctorForPage.First().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DoctorForPage.First().Category)
+            </th>
+            
+           
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.DoctorForPage) {
+        <tr>
+            <td>
+                    @Html.ActionLink(
+                item.Name,
+                "DoctorsDetailsView",
+                "Doctor",
+                new { id = item.DoctorId })
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+
+                <td>
+                    @if(User.IsInRole("ContentManager")){
+                        <a asp-action="EditDoctorsView"
+                   asp-controller="ContentManager"
+                   asp-route-id="@item.DoctorId"
+                   asp-route-urlReturn="@pathAndQuery"
+                   class="btn btn-light">
+                            Изменить
+                        </a>
+                    }
+                    else if(User.IsInRole("Administrator")){
+                        <a asp-action="DeleteDoctor"
+                        asp-controller="Admin"
+                        asp-route-id="@item.DoctorId"
+                        asp-route-urlReturn="@pathAndQuery"
+                        class="btn btn-light">Уволить</a>
+                    }
+                    else{
+                        <a asp-action="AddToCart"
+                   asp-controller="Doctor"
+                   asp-route-id="@item.DoctorId"
+                   asp-route-urlReturn="@pathAndQuery"
+                   class="btn btn-light">
+                            Записаться на консультацию специалиста
+                        </a>
+                    }
+                   
+                </td>
+           
+        </tr>
+}
+    </tbody>
+</table>
+
+@Html.PaginationBootstrapDoc(Model)
+
+

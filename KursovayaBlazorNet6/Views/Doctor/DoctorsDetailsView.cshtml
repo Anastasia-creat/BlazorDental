@@ -1,0 +1,51 @@
+﻿@model KursovayaBlazorNet6.Models.DoctorModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Детально";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+  
+    <hr />
+    <dl class="row">
+
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.Category)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ImageUrl)
+        </dt>
+
+        <dd class="col-sm-10">
+           @* @Html.DisplayFor(model => model.ImageUrl)*@
+
+            <img width="200" height="200"
+                 src="~/DoctorsImages/@Model.ImageUrl" />
+        </dd>
+       
+    </dl>
+</div>
+<div>
+
+    <a asp-action="ListView">Обратно</a>
+</div>
+
+

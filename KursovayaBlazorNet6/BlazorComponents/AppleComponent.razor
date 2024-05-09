@@ -1,0 +1,215 @@
+﻿@using KursovayaBlazorNet6.Models;
+@using KursovayaBlazorNet6.Domains;
+@using KursovayaBlazorNet6.BlazorComponents;
+@using Syncfusion.Blazor.Navigations
+@using System.Threading;
+@inject KursovayaBlazorNet6.BlazorServices.BlazorService productService
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@*<div class="container">
+    
+ 
+    <BlazorStrap.BSCarousel NumberOfItems="@items1.Count">
+        <div class="carousel-inner">
+            @for(int i = 0; i < items1.Count; i++)
+            {
+                <BlazorStrap.BSCarousel Src = "@items1[i].Source" Alt="@items1[i].Alt"/>
+            }
+        </div>
+        <BlazorStrap.BSCarouselControl CarouselDirection="BlazorStrap.CarouselDirection.Previous" NumberOfItems="@items1.Count"/>
+        <BlazorStrap.BSCarouselControl CarouselDirection="BlazorStrap.CarouselDirection.Next" NumberOfItems="@items1.Count"/>
+    </BlazorStrap.BSCarousel>
+    *@
+
+     <CategoryComponent
+       CategoryList="Categories"
+       OnSelectCategory="CategoryClick"/>
+     
+ 
+      
+
+        <AddServiceCartComponent
+            ParentComponent="this"/>
+  
+   <ServiceModalComponent
+       ParentComponent="this"/>
+
+     
+
+        
+
+@*</div>*@
+ 
+    <h3>Список услуг в категории '@ActiveCategoryName'</h3>
+
+    <BlazorTableServicesComponent 
+        ParentComponent="this"
+        ServiceList="Service"
+        OnSelectService="ProductClick"/>
+        
+
+    <BlazorPaginatorComponent 
+        ParentComponent="this"
+        ActiveCategoryName="ActiveCategoryName" 
+        OnSelectPage="PageClick" />
+
+     
+
+      
+
+
+
+<style>
+/*    .container{
+       
+        margin:0 auto;
+
+       
+    }
+    .container2{
+       display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 20px;*/
+       /* margin: 20px;*/
+       /* width:auto;
+        height: 70px;*/
+    }
+    /*.btn-blazor{
+        background-color: mediumpurple;
+        border-color: #e10000;
+    }*/
+
+    /*.btn-cart{
+        background-color: mediumpurple;
+        cursor:default;
+        border:none;
+        margin-right: 3px;
+        margin-left:3px;
+    }
+
+    .navbar-cart {
+        background-color: mediumpurple;
+    }
+
+    .btn-navbar-cart {
+        background-color: brown;
+    }*/
+</style>
+
+@code {
+
+    //Slider
+   
+  
+
+  //  public class Item
+  //  {
+  //      public string Source { get; set; } = "";
+  //      public string Alt { get; set; } = "";
+  //      public string Caption { get; set; } = "";
+  //      public string Header { get; set; } = "";
+  //  }
+
+  //  IList<Item> items1 = new List<Item>
+  //  {
+  //      new Item
+  //      {
+  //          Source = "~/DoctorsImages/Дайкер.jpg",
+  //          Alt = "First Slide",
+  //          Caption = "Slide 1",
+  //          Header = "Slide 1 Header"
+  //      },
+
+  //      new Item
+  //      {
+  //          Source = "~/DoctorsImages/Дайкер.jpg",
+  //          Alt = "First Slide",
+  //          Caption = "Slide 2",
+  //          Header = "Slide 2 Header"
+  //      },
+  //      new Item
+  //      {
+  //          Source = "~/DoctorsImages/Дайкер.jpg",
+  //          Alt = "First Slide",
+  //          Caption = "Slide 3",
+  //          Header = "Slide 3 Header"
+  //      },
+  //      new Item
+  //      {
+  //          Source = "~/DoctorsImages/Дайкер.jpg",
+  //          Alt = "First Slide",
+  //          Caption = "Slide 4",
+  //          Header = "Slide 4 Header"
+  //      }
+  //  };
+
+
+    /// <summary>
+    /// Событие на выбор услуги
+    /// </summary>
+    public event Action<ServicesModel> OnServiceSelect;
+
+    /// <summary>
+    /// Событие на выбор категории
+    /// </summary>
+    public event Action<string> OnCategorySelect;
+
+    public List<CategoryUslugi> Categories { get; set; }
+
+    public List<ServicesBriefModel> Service { get; set; }
+
+    public event Action AddToCartEvent;
+
+    public string ActiveCategoryName { get; set; }
+
+    public ServicesModel ActiveService { get; set; }
+
+    public void ProductClick(ServicesBriefModel s)
+    {
+        ActiveService = productService.GetServiceDetails(s.ServiceId);
+        OnServiceSelect.Invoke(ActiveService);
+        StateHasChanged();
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        Categories = await productService.GetCategories();
+        Service = productService.GetServices(ActiveCategoryName, 1);
+    }
+
+   
+
+    public void PageClick(int page)
+    {
+        Service = productService.GetServices(ActiveCategoryName, page);
+    }
+
+
+    public void CategoryClick(string categoryName)
+    {
+        ActiveCategoryName = categoryName;
+        PageClick(1);
+        OnCategorySelect.Invoke(categoryName);
+    }
+
+    public void AddToCart()
+    {
+        AddToCartEvent.Invoke();
+    }
+
+}

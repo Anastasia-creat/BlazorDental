@@ -1,0 +1,22 @@
+﻿@model KursovayaBlazorNet6.BusinessLogic.Cart
+
+@{
+   
+    string pathAndQuery =
+    Context.Request.Path +
+    Context.Request.QueryString;
+}
+
+@if (Model.DoctorCount > 0)
+{
+    <a class="btn btn-light"
+   asp-action="CartView"
+   asp-controller="Doctor"
+   asp-route-urlReturn="@pathAndQuery">
+        <span class="material-symbols-outlined">
+            clinical_notes
+        </span>
+        
+       
+    </a>
+}

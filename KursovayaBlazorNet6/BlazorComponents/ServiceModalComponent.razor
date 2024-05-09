@@ -1,0 +1,110 @@
+﻿@using KursovayaBlazorNet6.Models;
+@using KursovayaBlazorNet6.Domains;
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog"
+     style="display:@ModalDisplay">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title btn" >
+                    Услуга '@Service.Name'
+                </h5>
+                <button type="button"
+                        @onclick="CloseModalDialog"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl class="row btn" style="width: 100%">
+                   
+                @*   <dt class="col-sm-0">
+                        Категория
+                    </dt>
+                    <dd class="col-sm-12">
+                        @Service.CategoryUslugi
+                    </dd>*@
+                    <dt class="col-sm-0">
+                        Название
+                    </dt>
+                    <dd class="col-sm-12">
+                        @Service.Name
+                    </dd>
+                  
+                    <dt class="col-sm-0">
+                        Цена
+                    </dt>
+                    <dd class="col-sm-12">
+                        @Service.Price.ToString("C")
+                    </dd>
+                   
+                </dl>
+            </div>
+            <div class="modal-footer">
+               @* <button type="button" class="btn btn-primary">Save changes</button>*@
+                <button type="button" class="btn"
+                        data-dismiss="modal"
+                        @onclick="() => CloseModalDialog()">
+                   Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public AppleComponent ParentComponent { get; set; }
+
+    public ServicesModel Service { get; set; }
+
+    public string ModalDisplay = "none;";
+
+    public string ModalClass = "";
+
+    public bool ShowBackdrop = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        Service = new ServicesModel();
+
+        ParentComponent.OnServiceSelect += ActivateProduct;
+
+        return base.OnInitializedAsync();
+    }
+
+    public void ActivateProduct(ServicesModel model)
+    {
+        Service = model;
+        OpenModalDialog();
+
+        StateHasChanged();
+    }
+
+    public void OpenModalDialog()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+
+        StateHasChanged();
+    }
+
+    public void CloseModalDialog()
+    {
+        ModalDisplay = "none;";
+        ModalClass = string.Empty;
+        ShowBackdrop = false;
+
+        StateHasChanged();
+    }
+
+}

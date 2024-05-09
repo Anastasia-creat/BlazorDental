@@ -1,0 +1,39 @@
+﻿@model KursovayaBlazorNet6.Models.ReviewsModel
+@{
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+}
+
+<form method="post">
+   
+           <h2>Отзыв</h2>
+   
+    <p>
+        <label for="name">Как к Вам обращаться?</label><br />
+        <input type="text" name="name" />
+    </p>
+
+
+    <p>
+        <label for="text">Ваш отзыв:</label><br />
+        <textarea name="text" ></textarea>
+    </p>
+
+    <p>
+        <label for="text">Поставьте сегодняшнюю дату</label><br />
+        <input type="date" id="date" name="date" />
+    </p>
+
+    <label >Я даю согласие на обработку персональных данных</label>
+    <input type="checkbox" name="isAgree" value="true" />
+
+    <p>
+       @* <input btn btn-light type="submit" value="Отправить" />*@
+       <button type="submit" class="btn btn-light">Отправить</button>
+    </p>
+
+     
+
+</form>
+
+
+

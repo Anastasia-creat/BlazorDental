@@ -1,0 +1,219 @@
+﻿@using KursovayaBlazorNet6.Models;
+@using Microsoft.AspNetCore.Mvc;
+@using System.ComponentModel.DataAnnotations;
+@using System.Reflection.Metadata;
+@inject BlazorServices.BlazorCart cartService;
+
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog"
+     style="display:@ModalDisplay">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="width: 100%">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Специалист @Doctor.Name
+                </h5>
+                <button type="button"
+                        @onclick="CloseModalDialog"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <dl class="row btn" style="width: 100%">
+                  
+                 @*   <dt class="col-sm-0">
+                        Категория
+                    </dt>
+                    <dd class="col-sm-12">
+                        @Doctor.CategoryMedic
+                    </dd>*@
+                    <dt class="col-sm-12">
+                        Фамилия Имя Отчество
+                    </dt>
+                    <dd class="col-sm-12">
+                        @Doctor.Name
+                    </dd>
+                    <dt class="col-sm-12">
+                        Описание
+                    </dt>
+                    <dd class="col-sm-12">
+                        @Doctor.Description
+                    </dd>
+                  
+                    <dt class="col-sm-12">
+                        Фото
+                    </dt>
+                    <dd class="col-sm-12">
+                        <img width="250" height="300"
+                             src="/DoctorsImages/@Doctor.ImageUrl" />
+                    </dd>
+                </dl>
+          @*<dt class="col-sm-6">
+                   Выберите дату и время
+               </dt>
+                     <dd class="col-sm-6">
+
+                    <input type="date" onclick="SelectDate"/>
+                     </dd>*@
+                     @*<h2>@Day</h2>*@
+@*      
+<p>DateTimePicker value is: @DateValue</p>
+
+<SfDateTimePicker TValue="DateTime?" Value="@DateValue">
+    <DateTimePickerEvents TValue="DateTime?" @onclick="SelectDate">
+    </DateTimePickerEvents>
+</SfDateTimePicker>*@
+
+@*<SfDateTimePicker TValue="DateTime?" Value="@DateValue"></SfDateTimePicker>*@
+
+@*<button @onclick="@UpdateValue">Update Value</button>*@
+                  @*  DateTime: <input class="form-control" onclick="DateCart"  asp-for="DateTime" />*@
+              
+                <td>
+                    <button @onclick="() => 
+                        PurchaseClick(Doctor.DoctorId)"
+                          
+                            class="btn btn-light">
+                        <i class="bi bi-cart"></i>
+                        Записаться к специалисту
+                    </button>
+                </td>
+            </div>
+            <div class="modal-footer">
+               @* <button type="button" class="btn btn-primary">Save changes</button>*@
+                <button type="button" class="btn"
+                        data-dismiss="modal"
+                        @onclick="() => CloseModalDialog()">
+                   Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<CascadingValue Value="@DateValue">
+    <CartComponent />
+</CascadingValue>*@
+
+@code {
+
+   
+
+    //public DateTime? DateValue { get; set; } 
+    ////= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 28);
+
+    //public void DateCart()
+    //{
+    //    ParentComponent.AddToCart();
+    //    StateHasChanged();
+    //}
+
+    //public void UpdateValue()
+    //{
+    //    DateValue = DateTime.
+    //    ParentComponent.Add();
+    //    StateHasChanged();
+    //}
+
+    public DateTime? DateValue { get; set; } = DateTime.Now;
+
+    //private void onChange(Syncfusion.Blazor.Calendars.ChangedEventArgs<DateTime?> args)
+    //{
+    //    DateValue = args.Value;
+    //    ParentComponent.AddToCart();
+    //    StateHasChanged();
+    //}
+
+
+
+
+    [Parameter]
+    public MainDocComponent ParentComponent { get; set; }
+
+    public DoctorModel Doctor { get; set; }
+
+    [BindProperty]
+    public DateTime Day { get; set; } = DateTime.Now;
+
+    public string ModalDisplay = "none;";
+
+    public string ModalClass = "";
+
+    public bool ShowBackdrop = false;
+
+    public void OnGet()
+    {
+
+    }
+
+    public void OnPost()
+    {
+
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        Doctor = new DoctorModel();
+
+        ParentComponent.OnDoctorSelect += ActivateDoctor;
+
+        return base.OnInitializedAsync();
+    }
+
+    //public DateTime SelectDate()
+    //{
+
+    //    Day = new DateTime();
+    //    ParentComponent.AddToCart();
+    //    StateHasChanged();
+    //}
+
+    public void PurchaseClick(long doctorId)
+    {
+        ModalDisplay = "none;";
+        ModalClass = string.Empty;
+        ShowBackdrop = false;
+        cartService.AddDoctor(doctorId);
+       
+        ParentComponent.AddToCart();
+
+      
+
+        StateHasChanged();
+    }
+
+
+    public void ActivateDoctor(DoctorModel model)
+    {
+        Doctor = model;
+        OpenModalDialog();
+
+        StateHasChanged();
+    }
+
+    public void OpenModalDialog()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        ShowBackdrop = true;
+
+        StateHasChanged();
+    }
+
+    public void CloseModalDialog()
+    {
+        ModalDisplay = "none;";
+        ModalClass = string.Empty;
+        ShowBackdrop = false;
+
+        StateHasChanged();
+    }
+}

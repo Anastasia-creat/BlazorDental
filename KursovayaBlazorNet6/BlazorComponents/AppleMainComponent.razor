@@ -1,0 +1,224 @@
+﻿@using KursovayaBlazorNet6.Models;
+@using KursovayaBlazorNet6.Domains;
+@using KursovayaBlazorNet6.BlazorComponents;
+@using Syncfusion.Blazor.Navigations
+@using System.Threading;
+
+<div class="wrappermain" style="margin:0 auto">
+
+
+<Carousel DataSource="items"
+          HideArrows HideIndicators SlideShow AutoPlay Loop Interval="3000"
+          style="width:1300px; height:400px; margin: 0 auto; margin-bottom:20px; margin-top:20px">
+</Carousel>
+
+<div id="block-ebenefit-front">
+<div class="block block-ebenefit">
+
+   <div class="block__title">О клинике</div>
+   <div class="block__content">
+   <div class="field body info-body">
+     <p>Сеть клиник «Жемчужина» оказывает 
+         квалифицированные стоматологические услуги
+         в Челябинске с 1992 года. В настоящее время
+         в наших клиниках работают стоматологи всех
+         профилей, каждый из которых – настоящий 
+         профессионал своего дела. Ежегодно они 
+         принимают порядка 6-8 тысяч пациентов,
+         абсолютное большинство из которых остаются 
+         довольны сочетанием качества и стоимости 
+         услуг. Они выбирают «Жемчужину» в качестве 
+         постоянной стоматологии для себя и своих 
+         близких, рекомендуют нас друзьям и 
+         знакомым.</p>
+         <p>В распоряжении наших специалистов
+             имеется передовое оборудование 
+             зарубежных производителей,
+             обеспечивающее качественную диагностику
+             и эффективное лечение зубов и десен, а
+             также высокую точность хирургических
+             манипуляций. Стоматология имеет 3 
+             собственные зуботехнические
+             лаборатории, где в кратчайшие сроки 
+             изготавливаются все виды зубных 
+             протезов.</p>
+   </div>
+   <div class="entity-list">
+<div class="entity-list__items">
+    <article class="node-242 node">
+       
+        <div class="node__title">
+            <div class="field benefit-title">
+                
+                <div class="item benefit-title__item">
+                    <p>Демократические расценки</p>
+                </div>
+            </div>
+        </div>
+        <div class="field benefit-desc">
+            <p>Благодаря умеренным ценам наши услуги
+                доступны каждому челябинцу. Для 
+                постоянных клиентов действуют скидки.
+            </p>
+        </div>
+       
+    </article>
+
+     <article class="node-169 node ">
+        
+        <div class="node__title">
+            <div class="field benefit-title">
+                
+                <div class="item benefit-title__item">
+                    <p>Защита от кариеса</p>
+                </div>
+            </div>
+        </div>
+       
+    </article>
+
+     <article class="node-186 node">
+       
+        <div class="node__title">
+            <div class="field benefit-title">
+               
+                <div class="item benefit-title__item">
+                    <p>Безболезненное лечение зубов</p>
+                </div>
+            </div>
+        </div>
+    
+    </article>
+
+
+     <article class="node-135 node ">
+       
+        <div class="node__title">
+            <div class="field benefit-title">
+             
+                <div class="item benefit-title__item">
+                    <p>Лечение зубов без боли и стресса</p>
+                </div>
+            </div>
+        </div>
+       
+    </article>
+</div>
+   </div>
+   </div>
+
+   
+    <div class="section-services__items">
+  <h2 class="section-service__title new-title-h2">
+         Популярные услуги
+     </h2>
+
+       <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Лечение зубов </span>
+                 <span class="section-services__item-descr">Анестезия</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/анестезия.png" width="64" height="64">
+            </span>
+         </div>
+
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Лечение зубов</span>
+                 <span class="section-services__item-descr">Временная пломба</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/пломба.png" width="64" height="64">
+            </span>
+         </div>
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Лечение зубов</span>
+                 <span class="section-services__item-descr">Лечение кариеса</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/кариес.png" width="64" height="64">
+            </span>
+         </div>
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                <span class="section-services__item-title">Лечение зубов</span>
+                 <span class="section-services__item-descr">Лечение пульпита</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/пульпит.png" width="64" height="64">
+            </span>
+         </div>
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Точная диагностика</span>
+                 <span class="section-services__item-descr">Компьютерная томография зубов</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/томография.png" width="64" height="64">
+            </span>
+         </div>
+
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Удаление зуба</span>
+                 <span class="section-services__item-descr">Удаление зуба мудрости</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/удаление.png" width="64" height="64">
+            </span>
+         </div>
+
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Чистка налета и зубного камня</span>
+                 <span class="section-services__item-descr">Ультразвуковая чистка зубов</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/чистка.png" width="64" height="64">
+            </span>
+         </div>
+
+
+          <div class="section-services__item">
+             <span class="section-services__item-top">
+                 <span class="section-services__item-title">Чистка налета и зубного камня</span>
+                 <span class="section-services__item-descr">Шлифовка и полировка зубов</span>
+             </span>
+            <span class="section-services__item-overico">
+                <img class="section-services__item-ico" src="/images/шлифовка.png" width="64" height="64">
+            </span>
+         </div>
+
+     </div>
+
+
+</div>
+
+</div>
+
+
+<BlazorMessageComponent
+    ParentComponent="this"/>
+
+</div>
+
+@code {
+    dynamic[] items = new dynamic[]{
+      new {label="", content="",
+      image= "/images/sales.jpg" },
+      new {label="", content="",
+      image="/images/children.jpg"},
+      new {label="", content="",
+      image="/images/grafic.jpg"},
+      new {label="", content="",
+      image="/images/zoom.jpg"},
+  };
+}

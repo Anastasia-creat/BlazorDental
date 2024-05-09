@@ -1,0 +1,291 @@
+﻿@using KursovayaBlazorNet6.Domains;
+@using KursovayaBlazorNet6.Models;
+
+@inject KursovayaBlazorNet6.BlazorServices.BlazorDoctors doctorServices
+
+
+
+
+
+    <BlazorDialogDocComponent
+        ParentComponent="this"/>
+
+        <DoctorCategoryComponent
+            CategoryList="Category"
+            OnSelectCategory="CategoryClick"/>
+
+   
+        <CartComponent
+            ParentComponent="this"/>
+
+
+
+       <h3>Список специалистов в отделении '@ActiveCategoryName'</h3>
+    <BlazorDocTableComponent
+        ParentComponent="this"
+       DoctorList="Doctor"
+       OnSelectDoctor="DoctorClick"/>
+
+       <PaginationDocComponent 
+           ParentComponent="this"
+           ActiveCategoryName="ActiveCategoryName"
+            OnSelectPage="PageClick" />
+
+
+
+
+<style>
+    .container {
+        margin: 0 auto;
+    }
+
+    .container2 {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 20px;
+        margin: 20px;
+        /* width:auto;
+            height: 70px;*/
+    }
+    /*.btn-blazor{
+            background-color: mediumpurple;
+            border-color: #e10000;
+        }*/
+
+    /*.btn-cart{
+            background-color: mediumpurple;
+            cursor:default;
+            border:none;
+            margin-right: 3px;
+            margin-left:3px;
+        }
+
+        .navbar-cart {
+            background-color: mediumpurple;
+        }
+
+        .btn-navbar-cart {
+            background-color: brown;
+        }*/
+</style>
+@code {
+
+
+    /// <summary>
+    /// Событие на выбор услуги
+    /// </summary>
+    public event Action<DoctorModel> OnDoctorSelect;
+
+    /// <summary>
+    /// Событие на выбор категории
+    /// </summary>
+    public event Action<string> OnCategorySelect;
+
+    public List<CategoryMedic> Category { get; set; }
+
+    public List<DoctorModel> Doctor { get; set; }
+
+    public event Action AddToCartEvent;
+
+    public string ActiveCategoryName { get; set; }
+
+    public DoctorModel ActiveService { get; set; }
+
+    public void DoctorClick(DoctorModel s)
+    {
+        ActiveService = doctorServices.GetDoctorDetails(s.DoctorId);
+        OnDoctorSelect.Invoke(ActiveService);
+        StateHasChanged();
+    }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        Category = await doctorServices.GetCategories();
+        Doctor = doctorServices.GetDoctors(ActiveCategoryName, 1);
+    }
+
+
+
+    public void PageClick(int page)
+    {
+        Doctor = doctorServices.GetDoctors(ActiveCategoryName, page);
+    }
+
+
+    public void CategoryClick(string categoryName)
+    {
+        ActiveCategoryName = categoryName;
+        PageClick(1);
+        OnCategorySelect.Invoke(categoryName);
+    }
+
+    public void AddToCart()
+    {
+        
+        AddToCartEvent.Invoke();
+    }
+
+    //-----------------------------------------
+   
+
+    //public void CloseModalDialog()
+    //{
+    //    ModalDisplay = "none";
+    //    ModalClass = "";
+    //    ShowBackdrop = false;
+
+    //    StateHasChanged();
+    //}
+
+    //public DoctorModel ActiveProduct { get; set; }
+
+    //public void ProductClick(DoctorBriefModel p)
+    //{
+    //    ActiveProduct = doctorServices
+    //        .GetDoctorDetails(p.DoctorId);
+
+    //    OnDoctorSelect.Invoke(ActiveProduct);
+
+    //    //ModalDisplay = "block;";
+    //    //ModalClass = "Show";
+    //    //ShowBackdrop = true;
+
+    //    StateHasChanged();
+    //}
+
+    //protected async override Task OnInitializedAsync()
+    //{
+    //    Categories = await doctorServices.GetCategories();
+
+    //    StartPageIndex = 1;
+    //    TotalPages = doctorServices.CountTotalPages(ActiveCategoryName);
+    //    Doctors = doctorServices.GetDoctors(ActiveCategoryName, 1);
+    //    PageLinks = PageLink.GetPageLinks(StartPageIndex, TotalPages);
+    //    _activeIndex = StartPageIndex;
+    //}
+
+    //private int _activeIndex;
+
+
+    //public void CategoryClick(Category category)
+    //{
+    //    ActiveCategoryName = category?.Name;
+    //    TotalPages = doctorServices
+    //        .CountTotalPages(ActiveCategoryName);
+
+    // PageLinkClick(1);
+    //}
+
+    //public void PagePreviousClick()
+    //{
+    //    int page = _activeIndex - 1;
+    //    if (page < 1) page = 1;
+
+    //    PageLinkClick(page);
+    //}
+
+    //public void PageNextClick()
+    //{
+    //    int page = _activeIndex + 1;
+    //    if (page > TotalPages) page = TotalPages;
+
+    //    PageLinkClick(page);
+    //}
+
+    //public async void PageLinkClick(int page)
+    //{
+    //    PageLinks[_activeIndex - StartPageIndex].ActiveString = string.Empty;
+    //    Doctors = doctorServices.GetDoctors(ActiveCategoryName, page);
+
+    //    if (
+    //        page == PageLinks.Last().Index ||
+    //        page == PageLinks.First().Index ||
+    //        page == 1 ||
+    //        page == TotalPages)
+    //    {
+    //        int left = page - 5;
+    //        int right = page + 4;
+    //        if (left < 1) left = 1;
+    //        StartPageIndex = left;
+    //        PageLinks = PageLink.GetPageLinks(left, TotalPages);
+    //    }
+
+    //    PageLinks[page - StartPageIndex].ActiveString = "active";
+    //    _activeIndex = page;
+    //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /// <summary>
+    /// Событие на выбор продукта
+    /// </summary>
+   // public event Action<DoctorModel> OnDoctorSelect;
+
+    /// <summary>
+    /// Событие на выбор категории
+    /// </summary>
+    //public event Action<string> OnCategorySelect;
+
+    //public List<Category> Categories { get; set; }
+
+    //public List<DoctorBriefModel> Doctors { get; set; }
+
+
+
+    //public string ActiveCategoryName { get; set; }
+
+    //public DoctorModel ActiveDoctor { get; set; }
+
+    //public void DoctorClick(DoctorBriefModel p)
+    //{
+    //    ActiveDoctor = doctorServices
+    //        .GetDoctorDetails(p.DoctorId);
+
+    //    OnDoctorSelect.Invoke(ActiveDoctor);
+
+    //    StateHasChanged();
+    //}
+
+    //protected async override Task OnInitializedAsync()
+    //{
+    //    Categories = await doctorServices.GetCategories();
+
+
+    //    Doctors = doctorServices.GetDoctors(ActiveCategoryName, 1);
+
+    //}
+
+    //public void PageClick(int page)
+    //{
+    //   Doctors = doctorServices.GetDoctors(ActiveCategoryName, page);
+    //}
+
+
+    //public void CategoryClick(string  category)
+    //{
+    //    ActiveCategoryName = category;
+    //   // PageClick(1);
+    //    OnCategorySelect.Invoke(ActiveCategoryName);
+    //}
+
+}

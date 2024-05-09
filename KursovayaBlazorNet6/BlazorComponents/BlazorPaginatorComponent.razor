@@ -1,0 +1,154 @@
+﻿@using KursovayaBlazorNet6.Models;
+@inject BlazorServices.BlazorService productService;
+
+
+
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+
+       @* <li class="page-item">
+            <a class="page-link"
+               style="cursor: pointer;"
+               @onclick="()=>PageLinkClick(1)">
+                1
+            </a>
+        </li>*@
+
+        <li class="page-item "
+            style="cursor: pointer;"
+            @onclick="PagePreviousClick">
+            <a class="btn">
+                Назад
+            </a>
+        </li>
+
+        @foreach (var item in PageLinks)
+        {
+            <li @onclick="() => PageLinkClick(item.Index)"
+                class="page-item @item.ActiveString"
+                style="cursor: pointer;">
+                <a class="btn">
+                    @item.Index
+                </a>
+            </li>
+        }
+
+        <li class="page-item"
+        
+            @onclick="PageNextClick">
+            <a class=" btn">
+                Вперед
+            </a>
+        </li>
+
+       @* <li class="page-item">
+            <a class="page-link"
+               style="cursor: pointer;"
+               @onclick="()=>PageLinkClick(TotalPages)">
+                @TotalPages
+            </a>
+        </li>*@
+    </ul>
+</nav>
+
+@code {
+
+    [Parameter]
+    public AppleComponent ParentComponent { get; set; }
+
+    
+
+    /// <summary>
+    /// Событие на выбор категории
+    /// </summary>
+    [Parameter]
+    public EventCallback<int> OnSelectPage { get; set; }
+
+    public List<PageLink> PageLinks { get; set; }
+
+    public List<ServicesBriefModel> Services { get; set; }
+
+   
+
+    [Parameter]
+    public string ActiveCategoryName { get; set; }
+
+    public int StartPageIndex { get; set; }
+
+    public int TotalPages { get; set; }
+
+    private int _activeIndex;
+
+    
+
+    //УСЛУГИ
+    private  void Initialize()
+    {
+        StartPageIndex = 1;
+        _activeIndex = StartPageIndex;
+        TotalPages = productService.CountTotalPages(ActiveCategoryName);
+        PageLinks = PageLink.GetPageLinks(StartPageIndex, TotalPages);
+    }
+
+   
+
+    //?????????????????????????????????????????????????????????
+    protected override Task OnInitializedAsync()
+    {
+        Initialize();
+        ParentComponent.OnCategorySelect += CategoryChange;
+       
+
+        return base.OnInitializedAsync();
+    }
+
+
+    public void CategoryChange(string categoryName)
+    {
+        ActiveCategoryName = categoryName;
+        Initialize();
+       // InitializeDoc();
+    }
+
+    public void PagePreviousClick()
+    {
+        int page = _activeIndex - 1;
+        if (page < 1) page = 1;
+
+        PageLinkClick(page);
+    }
+
+    public void PageNextClick()
+    {
+        int page = _activeIndex + 1;
+        if (page > TotalPages) page = TotalPages;
+
+        PageLinkClick(page);
+    }
+
+    public async void PageLinkClick(int page)
+    {
+        PageLinks[_activeIndex - StartPageIndex].ActiveString = string.Empty;
+
+        OnSelectPage.InvokeAsync(page);
+
+        if (
+            page == PageLinks.Last().Index ||
+            page == PageLinks.First().Index ||
+            page == 1 ||
+            page == TotalPages)
+        {
+            int left = page - 5;
+            int right = page + 4;
+            if (left < 1) left = 1;
+            StartPageIndex = left;
+            PageLinks = PageLink.GetPageLinks(left, TotalPages);
+        }
+
+        PageLinks[page - StartPageIndex].ActiveString = "active";
+        _activeIndex = page;
+    }
+
+}

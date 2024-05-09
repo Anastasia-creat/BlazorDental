@@ -1,0 +1,110 @@
+﻿@model KursovayaBlazorNet6.Models.ServicePageModel;
+
+@{
+
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+    ViewData["Title"] = Model.CategoryName == null
+    ? "Услуги"
+    : $"Услуги({Model.CategoryName})";
+
+    string pathAndQuery =
+          Context.Request.Path +
+          Context.Request.QueryString;
+
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+
+<table class="table" @*class="table table-hover table-bordered"*@>
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ServicesForPage.First().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ServicesForPage.First().Price)
+            </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ServicesForPage)
+        {
+            <tr>
+                <td>
+
+                    @Html.ActionLink(
+                item.Name,
+                "ServicesDetailsView",
+                "Service",
+                new { id = item.ServiceId })
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @if (User.IsInRole("ContentManager"))
+                    {
+                        <a asp-action="EditServicesView"
+                   asp-controller="ContentManager"
+                   asp-route-id="@item.ServiceId"
+                   asp-route-urlReturn="@pathAndQuery"
+                           class="btn btn-light">
+                            Изменить
+                        </a>
+                    }
+                </td>
+
+                @* <td>
+            @if (User.IsInRole("ContentManager"))
+            {
+            <a asp-action="EditServicesView"
+            asp-controller="ContentManager"
+            asp-route-id="@item.ServiceId"
+            asp-route-urlReturn="@pathAndQuery"
+            class="btn btn-light">
+            Изменить
+            </a>
+            }
+            else{
+
+            }
+
+            </td>*@
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="inputForm">
+    <input type="text" id="message" />
+    <input type="button" id="sendBtn" value="Отправить" />
+</div>
+<div id="chatroom"></div>
+
+@section scripts{
+    <script>
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/chat")
+            .build();
+
+        hubConnection.on("Send", function (data) {
+
+            let elem = document.createElement("p");
+            elem.appendChild(document.createTextNode(data));
+            let firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+
+        });
+
+        document.getElementById("sendBtn").addEventListener("click", function (e) {
+            let message = document.getElementById("message").value;
+            hubConnection.invoke("SendMessageToAll", message);
+        });
+
+        hubConnection.start();
+    </script>
+}

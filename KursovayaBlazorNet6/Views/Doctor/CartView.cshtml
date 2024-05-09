@@ -1,0 +1,50 @@
+﻿@model KursovayaBlazorNet6.BusinessLogic.Cart
+
+
+@{
+    string pathAndQuery =
+           Context.Request.Path +
+           Context.Request.QueryString;
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+    ViewData["Title"] = "Корзина с талонами";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <table class="table" @*class="table table-hover table-bordered"*@>
+        <thead>
+            <tr>
+                <th>ФИО врача</th>
+                <th>Описание</th>
+                <th>Категория</th>
+                <th>Фото</th>
+              
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var record in Model.Records)
+            {
+                <tr>
+                    <td>@record.Doctor.Name</td>
+                    <td>@record.Doctor.Description</td>
+                    <td>@record.Doctor.Category</td>
+                    <td>
+                        <img width="200" height="200"
+                         src="~/DoctorsImages/@record.Doctor.ImageUrl" />
+                    </td>
+                   
+                  
+                 
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a class="btn  float-right"
+       href="@ViewBag.UrlReturn">
+        Посмотреть еще врачей
+    </a>
+</div>
+
+

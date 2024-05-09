@@ -1,0 +1,318 @@
+﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using Microsoft.AspNetCore.SignalR
+@using KursovayaBlazorNet6.Models;
+@inject NavigationManager NavigationManager
+@implements IAsyncDisposable
+
+
+
+          
+
+@*  @if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}    *@    
+
+@if(DisplayChat){
+
+
+<div class="main d-flex fixed-bottom">
+
+    <div class="wrapper shadow-sm rounded">
+   @* @if (!userMessages.Any())
+    {
+        <p>Сообщений пока нет, напишите первым!</p>
+    }*@
+        <button type="button"
+                @onclick="CloseChat"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+          <div class="name1">
+                    <img src="/images/1.png" style="width:80px; height:80px; padding: 10px;">
+                    <p style="padding-left: 0px; padding-top: 5px;">Менеджер</p>
+                </div>
+    @foreach (var userMessage in userMessages)
+    {
+            <div class="row  @(userMessage.CurrentUser ? "justify-content-end" : "")" style="width: 300px; margin-left: 10px; margin-bottom:10px">
+                @*row --------mb-3 d-flex*@
+              @*  <div class="name">
+                    <img src="~/images/1.png" style="width:50px; height:50px; padding: 10px;">
+                    <p style="padding-left: 0px; padding-top: 5px;">Менеджер</p>
+                </div>*@
+
+            <div class="card shadow @(userMessage.CurrentUser ? "color-green mr-5" : "ml-5")" style="width: 14rem border-radius:6px">
+                <div class="card-header">
+                    @(userMessage.CurrentUser ? "Вы" : userMessage.Username)
+                </div>
+
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item @(userMessage.CurrentUser ? "color-green" : "")">@userMessage.Message</li>
+                </ul>
+
+                <div class="card-footer">
+                    <span class="small">@userMessage.DateSent.ToString("HH:mm | MMM dd")</span>
+                </div>
+            </div>
+        </div>
+    }
+        <div class="container-3">
+            <div class="row">
+              @*  <div class="col-8">
+                    <input @bind="usernameInput" type="text" class="form-control" placeholder="Ваше имя" readonly="@isUserReadonly" style="color:black" />
+                </div>*@
+                <div class="col-12">
+                    <textarea @bind="messageInput" class="form-control" placeholder="Задайте вопрос" style="color:black"></textarea>
+                </div>
+                <div class="col-3">
+                    <button type="button" @onclick="Send" disabled="@(!IsConnected)" class="btn btn-light">Отправить</button>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+    </div>
+  }
+
+    <button style="float:right;" type="button" @onclick="OpenChat">
+                    <span class="material-symbols-outlined">
+                        forum
+                    </span>
+    </button>  
+
+
+
+
+
+
+
+
+@code {
+
+    // public string Chat = "none;";
+
+    //public string ModalClass = "";
+
+    public bool DisplayChat {get; set;} = false;
+
+    public void OpenChat(){
+        DisplayChat = true;
+        StateHasChanged();
+    }
+
+    public void CloseChat()
+    {
+        DisplayChat = false;
+        StateHasChanged();
+    }
+
+    [Parameter]
+    public AppleMainComponent ParentComponent { get; set; }
+    private HubConnection hubConnection;
+    private List<UserMessage> userMessages = new();
+    private string usernameInput;
+    private string messageInput;
+    private bool isUserReadonly = false;
+
+    public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .Build();
+
+        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        {
+            userMessages.Add(new UserMessage { Username = user, Message = message, CurrentUser = user == usernameInput, DateSent = DateTime.Now });
+
+            StateHasChanged();
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (!string.IsNullOrEmpty(usernameInput) && !string.IsNullOrEmpty(messageInput))
+        {
+            await hubConnection.SendAsync("SendMessage", usernameInput, messageInput);
+
+            isUserReadonly = true;
+            messageInput = string.Empty;
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    //public void OpenModalDialog()
+    //{
+    //  @*  ModalDisplay = "block";*@
+    //    ModalClass = "Show";
+    //    ShowBackdrop = true;
+
+    //    StateHasChanged();
+    //}
+
+    //public void CloseModalDialog()
+    //{
+    //   @* ModalDisplay = "none;";*@
+    //    ModalClass = string.Empty;
+    //    ShowBackdrop = false;
+
+    //    StateHasChanged();
+    //}
+    //protected new async void OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        await js.InvokeVoidAsync("alert", "Js Work");
+    //        StateHasChanged();
+    //    }
+    //   return;
+       
+    //}
+       
+
+    //<script src="/js/chat.js"></script>
+
+    //private HubConnection hubConnection;
+    //private List<UserMessage> userMessages = new();
+    //private string usernameInput;
+    //private string messageInput;
+    //private bool isUserReadonly = false;
+
+    //public bool IsConnected => hubConnection.State == HubConnectionState.Connected;
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //    hubConnection = new HubConnectionBuilder()
+    //        .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+    //        .Build();
+
+    //    hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+    //    {
+    //        userMessages.Add(new UserMessage { Username = user, Message = message, CurrentUser = user == usernameInput, DateSent = DateTime.Now });
+
+    //        StateHasChanged();
+    //    });
+
+    //    await hubConnection.StartAsync();
+    //}
+
+    //private async Task Send()
+    //{
+    //    if (!string.IsNullOrEmpty(usernameInput) && !string.IsNullOrEmpty(messageInput))
+    //    {
+    //        await hubConnection.SendAsync("SendMessage", usernameInput, messageInput);
+
+    //        isUserReadonly = true;
+    //        messageInput = string.Empty;
+    //    }
+    //}
+
+    //public async ValueTask DisposeAsync()
+    //{
+    //    if (hubConnection is not null)
+    //    {
+    //        await hubConnection.DisposeAsync();
+    //    }
+    //}
+
+    //bool chatting = false;
+    //string username = null;
+    //ChatClient client = null;
+    //string message = null;
+    //string newMessage = null;
+
+    //List<Message> messages = new List<Message>();
+
+    //async Task Chat()
+    //{
+    //    if (string.IsNullOrWhiteSpace(username))
+    //    {
+    //        message = "Please enter a name";
+    //        return;
+    //    }
+    //    try
+    //    {
+    //        messages.Clear();
+    //        client = new ChatClient(username, navigationManager);
+    //        client.MessageReceived += MessageReceived;
+
+    //        await client.StartAsync();
+    //        chatting = true;
+    //    }
+    //    catch (Exception e)
+    //    {
+    //        message = "Error";
+    //    }
+    //}
+
+    //void MessageReceived(object sender, MessageReceivedEventArgs e)
+    //{
+    //    bool isMine = false;
+    //    if (!string.IsNullOrWhiteSpace(e.Username))
+    //    {
+    //        isMine = string.Equals(e.Username, username, StringComparison.CurrentCultureIgnoreCase);
+    //    }
+    //    var newMsg = new Message(e.Username, e.Message, isMine);
+    //    messages.Add(newMsg);
+    //    StateHasChanged();
+    //}
+
+    //async Task DisconnectAsync()
+    //{
+    //    if (chatting)
+    //    {
+    //        await client.StopAsync();
+    //        client = null;
+    //        message = "chat ended";
+    //        chatting = false;
+    //    }
+    //}
+
+    //async Task SendAsync()
+    //{
+    //    if (chatting && !string.IsNullOrWhiteSpace(newMessage))
+    //    {
+    //        await client.SendAsync(newMessage);
+    //        newMessage = "";
+    //    }
+    //}
+
+    //class Message
+    //{
+
+    //    public Message(string username, string body, bool mine)
+    //    {
+    //        Username = username;
+    //        Body = body;
+    //        Mine = mine;
+    //    }
+
+    //    public string Username { get; set; }
+    //    public string Body { get; set; }
+    //    public bool Mine { get; set; }
+
+
+    //    public string CSS
+    //    {
+    //        get
+    //        {
+    //            return Mine ? "sent" : "received";
+    //        }
+    //    }
+    //}
+}
+
+

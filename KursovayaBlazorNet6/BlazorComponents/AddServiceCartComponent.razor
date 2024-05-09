@@ -1,0 +1,135 @@
+﻿@using KursovayaBlazorNet6.BusinessLogic;
+@inject KursovayaBlazorNet6.BlazorServices.BlazorCart cartService;
+
+<div class="btn" @onclick="ShowCart">
+    <span class="material-symbols-outlined">
+        shopping_cart_checkout
+    </span>
+     (@Cart.TotalCost.ToString("c"))
+    [@Cart.ServiceCount]
+</div>
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog"
+     style="display:@ModalDisplay">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Корзина услуг
+                </h5>
+                <button type="button"
+                        @onclick="CloseModalDialog"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-dark">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Наименование товара</th>
+                            <th scope="col">Цена</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col">Стоимость</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var entry in Cart.Records)
+                        {
+                            <tr>
+                                <td>@entry.Service.Name</td>
+                                <td>@entry.Service.Price.ToString("c")</td>
+
+                                <td>
+                                  <div class="btn-group">
+                                    <button @onclick="() => DecreaseService(entry.Service.ServiceId)" class="btn-cart btn-secondary">-</button>
+                               <button class="btn-cart btn-secondary">@entry.Quantity</button>
+                                    <button @onclick="() => IncreaseService(entry.Service.ServiceId)" class="btn-cart btn-secondary">+</button>
+                                    </div>
+                                </td>
+                          
+
+                                 <td>@entry.Cost.ToString("c")</td>
+                            </tr>
+                        }
+                          <tr>
+                        <td></td>
+                        <td>Итого:</td>
+                        <td>Всего товаров: @Cart.ServiceCount</td>
+                        <td>Сумма: @Cart.TotalCost.ToString("c")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn "
+                        data-dismiss="modal"
+                        @onclick="() => CloseModalDialog()">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public AppleComponent ParentComponent { get; set; }
+
+    public CartService Cart { get; set; }
+
+    public string ModalDisplay = "none;";
+
+    public string ModalClass = "";
+
+    protected bool ShowBackdrop = false;
+
+    protected override Task OnInitializedAsync()
+    {
+        ParentComponent.AddToCartEvent += UpdateCart;
+        Cart = cartService.GetCartService();
+        return base.OnInitializedAsync();
+    }
+
+    void UpdateCart()
+    {
+        Cart = cartService.GetCartService();
+        StateHasChanged();
+    }
+
+    void ShowCart()
+    {
+        ShowBackdrop = true;
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+    }
+
+
+    void CloseModalDialog()
+    {
+        ModalDisplay = "none;";
+        ModalClass = string.Empty;
+        ShowBackdrop = false;
+    }
+
+    void IncreaseService(long id)
+    {
+        cartService.AddService(id);
+        UpdateCart();
+    }
+
+    void DecreaseService(long id)
+    {
+        cartService.RemoveService(id);
+        UpdateCart();
+    }
+}

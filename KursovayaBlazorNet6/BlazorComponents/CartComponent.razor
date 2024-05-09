@@ -1,0 +1,161 @@
+﻿@using KursovayaBlazorNet6.BusinessLogic;
+@using KursovayaBlazorNet6.Models;
+@using Microsoft.AspNetCore.Mvc;
+@using System.ComponentModel.DataAnnotations;
+
+@inject KursovayaBlazorNet6.BlazorServices.BlazorCart cartService;
+@inject KursovayaBlazorNet6.BlazorComponents.BlazorDialogDocComponent dateService;
+
+<div class="btn" @onclick="ShowCart">
+    <span class="material-symbols-outlined">
+        shopping_cart_checkout
+    </span>
+   @* (@Cart.TotalCost.ToString("c"))*@
+    [@Cart.DoctorCount]
+</div>
+
+@if (ShowBackdrop)
+{
+    <div class="modal-backdrop fade show"></div>
+}
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog"
+     style="display:@ModalDisplay">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                   Талоны к записанным специалистам
+                </h5>
+                <button type="button"
+                        @onclick="CloseModalDialog"
+                        class="close"
+                        data-dismiss="modal"
+                        aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Фамилия Имя Отчество</th>
+                            <th scope="col">Фото</th>
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var entry in Cart.Records)
+                        {
+                            <tr>
+                                <td>@entry.Doctor.Name</td>
+                                <td>
+                                    <img width="200" height="200"
+                                         src="/DoctorsImages/@entry.Doctor.ImageUrl" />
+                                </td>
+                         
+                               <td>
+                                 @*  <h2>Date: @DateValue?.ToShortDateString()</h2>*@
+                                 
+                                    
+                                     @* @dialogdate.DateValue;*@
+                                    
+
+                               </td>
+                               
+                                  @*  <div class="btn-group">
+                                       <button @onclick="() => DecreaseProduct(entry.Doctor.DoctorId)" class="btn-cart btn-secondary">-</button>
+                                        <button class="btn-cart btn-secondary">@entry.Quantity</button>
+                                        <button @onclick="() => IncreaseProduct(entry.Doctor.DoctorId)" class="btn-cart btn-secondary">+</button>
+                                    </div>*@
+                              
+                              @*  <td>@entry.Cost.ToString("c")</td>*@
+                            </tr>
+                        }
+                      @*  <td>
+                           @dateService.Day;
+                           @dateService.SelectDate;
+                        </td>*@
+                      @*  <tr>
+                            <td></td>
+                            <td>Итого:</td>
+                            <td>Всего товаров: @Cart.ProductCount</td>
+                            <td>Сумма: @Cart.TotalCost.ToString("c")</td>
+                        </tr>*@
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn"
+                        data-dismiss="modal"
+                        @onclick="() => CloseModalDialog()">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    //[CascadingParameter]
+    //DateTime? DateValue { get; set; }
+
+    public BlazorDialogDocComponent dialogdate { get; set; }
+
+    [Parameter]
+    public MainDocComponent ParentComponent { get; set; }
+
+    public DoctorModel Doctor { get; set; }
+
+   
+
+    public Cart Cart { get; set; }
+
+    public string ModalDisplay = "none;";
+
+    public string ModalClass = "";
+
+    protected bool ShowBackdrop = false;
+
+    //public void OnPost() => dateService.Date();
+
+    protected override Task OnInitializedAsync()
+    {
+        ParentComponent.AddToCartEvent += UpdateCart;
+        Cart = cartService.GetCart();
+        return base.OnInitializedAsync();
+    }
+
+    void UpdateCart()
+    {
+        Cart = cartService.GetCart();
+        StateHasChanged();
+    }
+
+    void ShowCart()
+    {
+        ShowBackdrop = true;
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+    }
+
+
+    void CloseModalDialog()
+    {
+        ModalDisplay = "none;";
+        ModalClass = string.Empty;
+        ShowBackdrop = false;
+    }
+
+    void IncreaseProduct(long id)
+    {
+        cartService.AddDoctor(id);
+        UpdateCart();
+    }
+
+    void DecreaseProduct(long id)
+    {
+        cartService.RemoveDoctor(id);
+        UpdateCart();
+    }
+}

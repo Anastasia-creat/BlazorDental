@@ -1,0 +1,14 @@
+﻿@using KursovayaBlazorNet6.BlazorComponents;
+@{
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+}
+
+<!-- КОМПОНЕНТ -->
+
+
+<div>
+    @(await Html
+        .RenderComponentAsync<AppleComponent>(RenderMode.ServerPrerendered))
+
+   
+</div> 

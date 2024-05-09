@@ -1,0 +1,37 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout - Blazor.cshtml";
+}
+
+<h2>Страница администратора</h2>
+
+<div class="">
+    @* list-group; list-group-item list-group-item-action *@
+ 
+  
+</div>
+
+<div >
+    <a style="width: 100%; margin-bottom: 15px" asp-action="AddProduct" asp-controller="Admin"
+       class="btn btn-light" >
+        Нанять нового врача
+    </a>
+    <a style="width: 100%; margin-bottom: 15px" asp-action="EditCategories" asp-controller="Admin"
+   class=" btn btn-light" >
+        Редактировать категории 
+    </a>
+    <a style="width: 100%; margin-bottom: 15px" asp-action="Index" asp-controller="Roles"
+   class=" btn btn-light" >
+       Изменить роли
+    </a>
+</div>
+ 
+<a asp-action="ListView" asp-controller="Service"
+   class=" btn btn-light">
+    Вернуться на список услуг
+</a>
+
+<a asp-action="ListView" asp-controller="Doctor"
+   class=" btn btn-light">
+    Вернуться на список врачей
+</a>

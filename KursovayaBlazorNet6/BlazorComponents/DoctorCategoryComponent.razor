@@ -1,0 +1,66 @@
+﻿@using KursovayaBlazorNet6.Domains;
+
+<nav class="navbar navbar-expand-lg ">
+    @* <a class="btn btn-light" href="#">Категории</a>*@ @*navbar-brand*@
+    <button class="navbar-toggler btn"
+            type="button" data-toggle="collapse"
+            data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false"
+            aria-label="Toggle navigation">
+        @* <span class="navbar-toggler-icon"></span>*@
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav" >
+
+            <li style="cursor: pointer; "
+                class="nav-item"
+                @onclick="()=>CategoryClick(null)">
+                <a class=" btn" >
+                   Все отделения
+                   
+                </a>
+            </li>
+
+            @foreach (var category in CategoryList)
+            {
+                string active =
+                ActiveCategoryName == category.Name ?
+                "active" : "";
+
+                <li style="cursor: pointer; padding-left:20px"
+                    class="nav-item @active"
+                @onclick="()=>CategoryClick(category)">
+                    <a class=" btn">
+                        @category.Name
+                      
+                    </a>
+                </li>
+            }
+
+        </ul>
+    </div>
+</nav>
+@code {
+    /// <summary>
+    /// Категории передаются из родительского компонента
+    /// </summary>
+    [Parameter]
+    public List<CategoryMedic> CategoryList { get; set; }
+
+    public string ActiveCategoryName { get; set; }
+
+
+
+    /// <summary>
+    /// Событие на выбор категории
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnSelectCategory { get; set; }
+
+
+    public void CategoryClick(CategoryMedic category)
+    {
+        ActiveCategoryName = category?.Name;
+        OnSelectCategory.InvokeAsync(ActiveCategoryName);
+    }
+}

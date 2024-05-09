@@ -1,0 +1,79 @@
+﻿@using KursovayaBlazorNet6.Models;
+@inject KursovayaBlazorNet6.BlazorServices.BlazorCart cartServices;
+
+<style>
+    .table {
+   /* border-color:#686e7d;*/
+   /* max-width:960px;
+    margin: 0 auto;*/
+    }
+
+</style>
+
+
+<table class="table table-bordered" > @*table-hover table-bordered*@
+    <thead>
+        <tr>
+          @* <th>Id</th>*@
+            <th>
+                Название
+            </th>
+            <th>
+                Цена
+            </th>
+           
+        </tr>
+    </thead>
+
+    <tbody >
+        @foreach (var p in ServiceList)
+        {
+            <tr>
+               @* <td>@p.ServiceId</td>*@
+                <td>
+                    <a style="cursor: pointer;"
+                   @onclick="() => ProductClick(p)">
+                        @p.Name
+                    </a>
+                </td>
+
+                <td>@p.Price.ToString("C")</td>
+                <td>
+                    <button @onclick="() => PurchaseClick(p.ServiceId)"
+                            class="btn">
+                        <i class="bi bi-cart"></i>
+                        Записаться на услугу
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter]
+    public List<ServicesBriefModel> ServiceList { get; set; }
+
+    /// <summary>
+    /// Событие на выбор категории
+    /// </summary>
+    [Parameter]
+    public EventCallback<ServicesBriefModel> OnSelectService { get; set; }
+
+    [Parameter]
+    public AppleComponent ParentComponent { get; set; }
+
+    public void ProductClick(ServicesBriefModel model)
+    {
+        OnSelectService.InvokeAsync(model);
+    }
+
+   
+
+
+    public void PurchaseClick(long serviceId)
+    {
+        cartServices.AddService(serviceId);
+        ParentComponent.AddToCart();
+    }
+}
